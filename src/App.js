@@ -8,7 +8,30 @@ function App() {
   const [ads, setAds] = useState([]);
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('');
-
+  
+  //fetch request to handle and set various ad cards
+  async function getAds() {
+    const url = 'http://localhost:3000/fakeDataSet';
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+  
+      const json = await response.json();
+      // console.log(json);
+      // json comes in the form of an object with 4 arrays, each containing a certain amount of ad objects
+      // we need to travese this json, extracting and standardazing all of the ads so that the data can be sent to adcard component and rendered
+      // this will be handled by function standardizeAds
+      const standardAds = await standardizeAds(json);
+      console.log('Standardized Ads:', standardAds);
+      setAds(standardAds);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+  
+  // function to standardize ad format 
   async function standardizeAds(JSONobject) {
     const finalArray = [];
     // given the json object we need to iterate and standardize the ads based on platform
@@ -96,27 +119,6 @@ function App() {
     return finalArray;
   }
 
-  //fetch request to handle and set various ad cards
-  async function getAds() {
-    const url = 'http://localhost:3000/fakeDataSet';
-    try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-      }
-
-      const json = await response.json();
-      // console.log(json);
-      // json comes in the form of an object with 4 arrays, each containing a certain amount of ad objects
-      // we need to travese this json, extracting and standardazing all of the ads so that the data can be sent to adcard component and rendered
-      // this will be handled by function standardizeAds
-      const standardAds = await standardizeAds(json);
-      console.log('Standardized Ads:', standardAds);
-      setAds(standardAds);
-    } catch (error) {
-      console.error(error.message);
-    }
-  }
 
   // use effect to set state with standardized ads upon mounting of component
   useEffect(() => {

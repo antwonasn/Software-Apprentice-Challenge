@@ -1,5 +1,3 @@
-import React from 'react';
-
 const AdCard = ({ ad }) => {
     return(
         <div className='ad-card'>
